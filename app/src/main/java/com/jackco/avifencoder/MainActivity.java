@@ -31,8 +31,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -50,12 +48,19 @@ public class MainActivity extends AppCompatActivity {
     String tofilename = "";
 
     int threads = 8;
-    int qua = 4;
+    int qua1 = 50;
+    int qua2 = 60;
+
+    int speed = 10;
+
+
     SeekBar s;
     SeekBar s2;
+    SeekBar ss;
 
     TextView textq;
     TextView textt;
+    TextView texts;
 
     String encodedIn = null;
 
@@ -92,7 +97,10 @@ public class MainActivity extends AppCompatActivity {
             time = System.currentTimeMillis();
             s.setVisibility(View.GONE);
             s2.setVisibility(View.GONE);
+            ss.setVisibility(View.GONE);
             textq.setVisibility(View.GONE);
+            textt.setVisibility(View.GONE);
+            texts.setVisibility(View.GONE);
             textt.setVisibility(View.GONE);
 
         }
@@ -103,8 +111,10 @@ public class MainActivity extends AppCompatActivity {
             pro.setVisibility(View.GONE);
             s.setVisibility(View.VISIBLE);
             s2.setVisibility(View.VISIBLE);
+            ss.setVisibility(View.VISIBLE);
             textq.setVisibility(View.VISIBLE);
             textt.setVisibility(View.VISIBLE);
+            texts.setVisibility(View.VISIBLE);
 
             File file = new File(getDataDir()+  "/" + rawFileP );
             if(file.exists()){
@@ -243,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         String ev = getApplicationInfo().nativeLibraryDir;
         String[] envp = {"LD_LIBRARY_PATH=" + ev};
 
-        String name = getApplicationInfo().nativeLibraryDir + "/libavif_example1.so " + getDataDir()+ "/" + rawFileP + " " + getDataDir() + "/b.avif" + " " + width + " " + height +" " + threads + " " + qua;
+        String name = getApplicationInfo().nativeLibraryDir + "/libavif_example1.so " + getDataDir()+ "/" + rawFileP + " " + getDataDir() + "/b.avif" + " " + width + " " + height +" " + threads + " " + qua1 +  " " + qua2 +  " " + speed;
 
 
         String res = null;
@@ -264,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
 
         text2 = findViewById(R.id.text2);
         text2.setText("Ready");
+
+        texts = findViewById((R.id.texts));
 
         rawFileP = "decoded.raw";
 
@@ -300,19 +312,42 @@ public class MainActivity extends AppCompatActivity {
 
         textq = findViewById(R.id.textq);
 
-        s = findViewById(R.id.seek1);
+        s = findViewById(R.id.seekq);
 
 
         s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
-                qua = progress*3 + 1;
-                Log.e("QUA",String.valueOf(qua));
-                if(qua == 1) textq.setText("Quality: Normal");
-                else if(qua == 4) textq.setText("Quality: Lossless");
-                else textq.setText("Invalid Quality");
+                if(progress < 50) {
+                    qua1 = 63 - progress;
+                    qua2 = qua1 + 10;
+                }
+                if(qua2 > 63) qua2 = 63;
+                String qu = String.format("Quality: %s", progress);
+                textq.setText(qu);
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        ss = findViewById(R.id.seeks);
+
+        ss.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
+                speed = progress + 1;
+                String sp = String.format("Encoding Speed: %s", speed);
+                texts.setText(sp);
             }
 
             @Override
