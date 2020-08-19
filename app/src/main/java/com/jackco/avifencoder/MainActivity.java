@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     int speed = 10;
 
-
     SeekBar s;
     SeekBar s2;
     SeekBar ss;
@@ -123,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             Log.e("DONE","POST EXECUTE!");
-            Log.e("DONE","Time: " + String.valueOf(System.currentTimeMillis()-time));
-            encodedIn = "Encoded in " + String.valueOf(System.currentTimeMillis() - time) + " milliseconds";
+            Log.e("DONE","Time: " + (System.currentTimeMillis() - time));
+            encodedIn = "Encoded in " + (System.currentTimeMillis() - time) + " milliseconds";
 
             String fileName = "b.avif";
 
@@ -143,7 +142,10 @@ public class MainActivity extends AppCompatActivity {
                 copy(i, t);
                 if(f.exists()) f.delete();
 
-                if(t.exists()) text2.setText("AVIF file saved to:\n\n " +getExternalFilesDir(null).getAbsolutePath() + "/" + tofilename +"\n\n"+encodedIn);
+                String sizecomp = "AVIF size " + t.length()/1024 + " KB";
+
+
+                if(t.exists()) text2.setText("AVIF file saved to:\n\n " +getExternalFilesDir(null).getAbsolutePath() + "/" + tofilename +"\n\n"+encodedIn + "\n" + sizecomp);
 
 
             }
@@ -215,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
                 byteArray = byteBuffer.array();
 
                 fo.write(byteArray);
+
+
 
                 Log.e("DONE","DONE!");
 
@@ -319,11 +323,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
-                if(progress < 50) {
-                    qua1 = 63 - progress;
-                    qua2 = qua1 + 10;
-                }
+                qua1 = 63 - progress;
+                qua2 = qua1 + 10;
+
                 if(qua2 > 63) qua2 = 63;
+                if(qua1 == 0) qua2 = 0;
                 String qu = String.format("Quality: %s", progress);
                 textq.setText(qu);
             }
